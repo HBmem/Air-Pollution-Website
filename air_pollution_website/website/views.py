@@ -35,8 +35,8 @@ def home(request):
         # dictionary keys
         x = 0
         y = 0
-
-
+        
+        
         for row in results:
             van.coords.addcoordinates([(row[1], row[2])])
             van.style.linestyle.color = simplekml.Color.white
@@ -94,3 +94,4 @@ def home(request):
 
 def show(request):
     return render(request, "website/show.html")
+    
