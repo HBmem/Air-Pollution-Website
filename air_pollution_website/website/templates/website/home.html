@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <link rel = "stylesheet" href = "{% static 'website/style.css' %}">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Create your own visualization</h1>    
+
+    <form action="" method="GET" class="drop-zone" >
+        <div class="drop-zone__prompt">
+            <p>Drop a CSV file here <br> Or click to upload</p>
+            <input type="file" name="myFile" class="drop-zone__input" accept=".csv">
+        </div>
+    </form>
+
+    <script src="../../static/website/function.js"></script>
+</body>
+</html>
