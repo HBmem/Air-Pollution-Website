@@ -7,13 +7,21 @@
 </head>
 <body>
     <h1>Create your own visualization</h1>    
-
-    <form action="" method="GET" class="drop-zone" >
+    {% block content %}
+    <form action="" method="post" class="drop-zone" enctype="multipart/form-data" >
+        {% csrf_token %}
         <div class="drop-zone__prompt">
             <p>Drop a CSV file here <br> Or click to upload</p>
-            <input type="file" name="myFile" class="drop-zone__input" accept=".csv">
+            <input type="file" id="dropID" name="dropName" class="drop-zone__input" accept=".csv" >
         </div>
     </form>
+    
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <input type="file" id="fileID" name="fileName">
+        <button type="submit">Submit file</button>
+    </form>
+    {% endblock %}
 
     <script src="../../static/website/function.js"></script>
 </body>
