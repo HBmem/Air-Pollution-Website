@@ -402,3 +402,12 @@ def visualize(inputfile):
 
     return(kml)
     #kml.save('practice3.kml')
+
+def show(request):
+    return render(request, "website/show.html")
+
+def help(request):
+    return render(request, "website/help.html")
+
+def about(request):
+    return render(request, "website/about.html")
