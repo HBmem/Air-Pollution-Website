@@ -94,4 +94,9 @@ def home(request):
 
 def show(request):
     return render(request, "website/show.html")
-    
+
+def help(request):
+    return render(request, "website/help.html")
+
+def about(request):
+    return render(request, "website/about.html")
