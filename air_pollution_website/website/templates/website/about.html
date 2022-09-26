@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <link rel = "stylesheet" href = "{% static 'website/style.css' %}">
-    <title>About</title>
-</head>
-<body>
+{% extends './base.html' %}
+
+{% block title %} <title>About</title> {% endblock title %}
+
+{% block content %}
     <h1>About us</h1>    
     <p style="font-size: 18px;">
         Visualize Air Pollution is a project cooperated between the University of Memphis and the U.S. Environmental Protection Agency (U.S. EPA).
@@ -21,5 +18,4 @@
             <li>Vu Le: Developer</li>
         </ul>
     </p>
-</body>
-</html>
+{% endblock %}

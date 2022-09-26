@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <link rel = "stylesheet" href = "{% static 'website/style.css' %}">
-    <title>Show</title>
-</head>
-<body>
+{% extends './base.html' %}
+
+{% block title %} <title>Conversion</title> {% endblock title %}
+
+{% block content %}
     <h1>Your Visualization</h1> 
 
     <table style="width: 280px, opacity: 0.6;">
@@ -20,7 +17,4 @@
             <td><button style="width: 180px" class="button">Go to Google Earth</button></td>
         </tr>
     </table>
-    
-    <script src="../../static/website/function.js"></script>
-</body>
-</html>
+{% endblock %}

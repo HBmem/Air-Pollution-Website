@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel = "stylesheet" href = "../../static/website/style.css">
-    <title>Help</title>
-</head>
-<body>
+{% extends './base.html' %}
+
+{% block title %} <title>Help</title> {% endblock title %}
+
+{% block content %}
     <h1>Help</h1>   
     <h2 style="text-align: left; opacity: 0.6;">Website</h2>   
     <div style="background: whitesmoke; font-size: 18px; padding: 1px; border: 1px solid lightgrey; margin: 10px; opacity: 0.7;">
@@ -72,4 +70,4 @@
             </details>
         </p>
     </div> 
-</body>
+{% endblock %}

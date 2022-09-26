@@ -1,7 +1,7 @@
 body {
     background-image: url(./background.jpeg);
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     position: fixed;
     top: 40%;
     left: 50%;
