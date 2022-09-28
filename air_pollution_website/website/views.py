@@ -3,6 +3,7 @@ import re
 import simplekml
 import io
 import openpyxl
+import numpy as np
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -11,7 +12,6 @@ from django.contrib import messages
 def home(request):
     if request.method == 'GET':
         return render(request, "website/home.html")
-
     elif request.method == 'POST':
         thefile = request.FILES.get('fileName', None)
         thewind = request.FILES.get('windName', None)
@@ -27,10 +27,39 @@ def home(request):
             windList.pop(0)
         inputfile = csv.reader(decoded_file)
         next(inputfile)  # Go past the header
-        kml = visualize(inputfile, windList)
+        xcoord = []
+        ycoord = []
+        ben = []
+        ch = []
+        h2 = []
+        to = []
+        vo = []
+        xym = []
+        xyp = []
+
+        for row in inputfile: # each row is a list
+            xcoord.append(row[0])
+            ycoord.append(row[1])
+            ben.append(float(row[2]))
+            ch.append(float(row[3]))
+            h2.append(float(row[4]))
+            to.append(float(row[5]))
+            vo.append(float(row[6]))
+            xym.append(float(row[7]))
+            xyp.append(float(row[8]))
+
+        outputBen = transform(ben, 'BEN', lag=30, threshold=2, influence=0)
+        outputCh4 = transform(ch, 'CH4', lag=30, threshold=2, influence=0)
+        outputH2s = transform(h2, 'H2S', lag=30, threshold=2, influence=0)
+        outputTol = transform(to, 'TOL', lag=30, threshold=2, influence=0)
+        outputVoc = transform(vo, 'VOC', lag=30, threshold=2, influence=0)
+        outputXym = transform(xym, 'XYM', lag=30, threshold=2, influence=0)
+        outputXyp = transform(xyp, 'XYP', lag=30, threshold=2, influence=0)
+        final = np.column_stack((xcoord, ycoord, outputBen, outputCh4, outputH2s, outputTol, outputVoc, outputXym, outputXyp))
+
+        kml = visualize(final, windList)
         kml.save('practice3.kml')
         context = {}
-
         return render(request, "website/show.html", context)
     else:
         return render(request, "website/home.html")
@@ -86,20 +115,20 @@ def visualize(inputfile, windList):
 
     #iterate through array
     for row in results:
-        van.coords.addcoordinates([(row[1], row[2])])
+        van.coords.addcoordinates([(row[0], row[1])])
         van.style.linestyle.color = simplekml.Color.white
         van.style.linestyle.width = 1
 
         # start of BEN
-        if row[3] != '0':
+        if row[2] != '0.0':
             if x == 0:
-                benDict[x] = row[1], row[2], 0
+                benDict[x] = row[0], row[1], 0
                 x += 1
-            benDict[x] = row[1], row[2], row[3]
-            benid = row[3]
+            benDict[x] = row[0], row[1], row[2]
+            benid = row[2]
             x += 1
 
-        if row[3] == '0' and bool(benDict) is True:
+        if row[2] == '0.0' and bool(benDict) is True:
             if float(benid) > 20:
                 benHigh = benfol.newlinestring(name="BEN peak: " + benid)
                 benHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -127,7 +156,6 @@ def visualize(inputfile, windList):
                 ben.altitudemode = simplekml.AltitudeMode.relativetoground
                 ben.style.linestyle.color = simplekml.Color.blue
                 ben.style.linestyle.width = 5
-
                 for benKey in benDict:
                     benValues = benDict.values()
                     benValues = list(benValues)
@@ -139,15 +167,15 @@ def visualize(inputfile, windList):
         # end of BEN
 
         # start of CH4
-        if row[4] != '0':
+        if row[3] != '0.0':
             if y == 0:
-                ch4Dict[y] = row[1], row[2], 0
+                ch4Dict[y] = row[0], row[1], 0
                 y += 1
-            ch4Dict[y] = row[1], row[2], row[4]
-            ch4id = row[4]
+            ch4Dict[y] = row[0], row[1], row[3]
+            ch4id = row[3]
             y += 1
 
-        if row[4] == '0' and bool(ch4Dict) is True:
+        if row[3] == '0.0' and bool(ch4Dict) is True:
             if float(ch4id) > 20:
                 ch4High = ch4fol.newlinestring(name="CH4 peak: " + ch4id)
                 ch4High.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -186,15 +214,15 @@ def visualize(inputfile, windList):
         # end of CH4
 
         # start of H2S
-        if row[5] != '0':
+        if row[4] != '0.0':
             if z == 0:
-                h2sDict[z] = row[1], row[2], 0
+                h2sDict[z] = row[0], row[1], 0
                 z += 1
-            h2sDict[z] = row[1], row[2], row[5]
-            h2sid = row[5]
+            h2sDict[z] = row[0], row[1], row[4]
+            h2sid = row[4]
             z += 1
 
-        if row[5] == '0' and bool(h2sDict) is True:
+        if row[4] == '0.0' and bool(h2sDict) is True:
             if float(h2sid) > 20:
                 h2sHigh = h2sfol.newlinestring(name="H2S peak: " + h2sid)
                 h2sHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -233,15 +261,15 @@ def visualize(inputfile, windList):
         # end of H2S
 
         # start of TOL
-        if row[6] != '0':
+        if row[5] != '0.0':
             if a == 0:
-                tolDict[a] = row[1], row[2], 0
+                tolDict[a] = row[0], row[1], 0
                 a += 1
-            tolDict[a] = row[1], row[2], row[6]
-            tolid = row[6]
+            tolDict[a] = row[0], row[1], row[5]
+            tolid = row[5]
             a += 1
 
-        if row[6] == '0' and bool(tolDict) is True:
+        if row[5] == '0.0' and bool(tolDict) is True:
             if float(tolid) > 20:
                 tolHigh = tolfol.newlinestring(name="TOL peak: " + tolid)
                 tolHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -280,15 +308,15 @@ def visualize(inputfile, windList):
         # end of TOL
 
         # start of VOC
-        if row[7] != '0':
+        if row[6] != '0.0':
             if b == 0:
-                vocDict[b] = row[1], row[2], 0
+                vocDict[b] = row[0], row[1], 0
                 b += 1
-            vocDict[b] = row[1], row[2], row[7]
-            vocid = row[7]
+            vocDict[b] = row[0], row[1], row[6]
+            vocid = row[6]
             b += 1
 
-        if row[7] == '0' and bool(vocDict) is True:
+        if row[6] == '0.0' and bool(vocDict) is True:
             if float(vocid) > 20:
                 vocHigh = vocfol.newlinestring(name="VOC peak: " + vocid)
                 vocHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -328,15 +356,15 @@ def visualize(inputfile, windList):
 
 
         # start of XYM
-        if row[8] != '0':
+        if row[7] != '0.0':
             if c == 0:
-                xymDict[c] = row[1], row[2], 0
+                xymDict[c] = row[0], row[1], 0
                 c += 1
-            xymDict[c] = row[1], row[2], row[8]
-            xymid = row[8]
+            xymDict[c] = row[0], row[1], row[7]
+            xymid = row[7]
             c += 1
 
-        if row[8] == '0' and bool(xymDict) is True:
+        if row[7] == '0.0' and bool(xymDict) is True:
             if float(xymid) > 20:
                 xymHigh = xymfol.newlinestring(name="XYM peak: " + xymid)
                 xymHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -375,15 +403,15 @@ def visualize(inputfile, windList):
         # end of XYM
 
         # start of XYP
-        if row[9] != '0':
+        if row[8] != '0.0':
             if d == 0:
-                xypDict[d] = row[1], row[2], 0
+                xypDict[d] = row[0], row[1], 0
                 d += 1
-            xypDict[d] = row[1], row[2], row[9]
-            xypid = row[9]
+            xypDict[d] = row[0], row[1], row[8]
+            xypid = row[8]
             d += 1
 
-        if row[9] == '0' and bool(xypDict) is True:
+        if row[8] == '0.0' and bool(xypDict) is True:
             if float(xypid) > 20:
                 xypHigh = xypfol.newlinestring(name="XYP peak: " + xypid)
                 xypHigh.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -422,13 +450,74 @@ def visualize(inputfile, windList):
         # end of XYP
 
     return(kml)
-    #kml.save('practice3.kml')
-
-def show(request):
-    return render(request, "website/show.html")
 
 def help(request):
     return render(request, "website/help.html")
 
 def about(request):
     return render(request, "website/about.html")
+
+# function to find peak and transform the data
+# by default, lag is 30, threshold is 2, and influence is 0
+def transform(data, chemical, lag = 30, threshold = 2, influence = 0):
+    # find the peak
+    signals = np.zeros(len(data))
+    filteredData = np.array(data)
+    avgFilter = np.zeros(len(data))
+    stdFilter = np.zeros(len(data))
+    avgFilter[lag - 1] = np.mean(data[0 : lag])
+    stdFilter[lag - 1] = np.std(data[0 : lag])
+
+    for i in range(lag, len(data)):
+        # peak detection
+        if abs(data[i] - avgFilter[i - 1]) > threshold * stdFilter[i - 1]:
+            if data[i] > avgFilter[i - 1]:
+                signals[i] = 1
+            else:
+                signals[i] = -1
+            filteredData[i] = influence * data[i] + (1 - influence) * filteredData[i - 1]
+        else:
+            signals[i] = 0
+            filteredData[i] = data[i]
+
+        avgFilter[i] = np.mean(filteredData[(i - lag + 1) : i + 1])
+        stdFilter[i] = np.std(filteredData[(i - lag + 1) : i + 1])
+
+        # check the peak
+        if chemical == 'BEN':
+            limit = 5
+        elif chemical == 'CH4':
+            limit = 2
+        elif chemical == 'H2S':
+            limit = 20
+        elif chemical == 'TOL':
+            limit = 9
+        elif chemical == 'VOC':
+            limit = 1
+        elif chemical == 'XYM':
+            limit = 28
+        else:
+            limit = 5
+
+        if signals[i] != 0 and abs(data[i] - avgFilter[i]) < limit:
+            signals[i] = 0
+            
+    # transform the data
+    start_index = 0
+    while start_index < len(signals):
+        # if the current signal is 1 or -1, 
+        # then assign the corresponding data with the mean of the consequence of signals 
+        if signals[start_index] != 0:
+            step = 1
+            while start_index + step < len(signals) and signals[start_index + step] != 0:
+                step+= 1
+            avg = round(sum(data[start_index: start_index + step]) / step, 3) # find the mean
+            data[start_index: start_index + step] = [avg] * step # assign data with the new value
+            start_index+= step
+        # otherwise, if the current signal is 0,
+        # then assign the corresponding data as 0 and check the next signal
+        else: 
+            data[start_index] = 0
+            start_index+= 1
+            
+    return data
