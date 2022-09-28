@@ -2,6 +2,7 @@ import csv
 import re
 import simplekml
 import io
+import openpyxl
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -12,12 +13,21 @@ def home(request):
         return render(request, "website/home.html")
 
     elif request.method == 'POST':
-        thefile = request.FILES['fileName']
+        thefile = request.FILES.get('fileName', None)
+        thewind = request.FILES.get('windName', None)
         decoded_file = thefile.read().decode('utf-8').splitlines()
-        
+        windList = None
+        if thewind is not None:
+            #decoded_wind = thewind.read().decode('utf-8').splitlines()
+            inputwind = openpyxl.load_workbook(thewind)
+            ws = inputwind.active
+            windList = []
+            for row in ws.iter_rows(values_only=True): # each row is a list
+                windList.append(row)
+            windList.pop(0)
         inputfile = csv.reader(decoded_file)
         next(inputfile)  # Go past the header
-        kml = visualize(inputfile)
+        kml = visualize(inputfile, windList)
         kml.save('practice3.kml')
         context = {}
 
@@ -29,11 +39,11 @@ def show(request):
     return render(request, "website/show.html")
 
 
-def visualize(inputfile):
+def visualize(inputfile, windList):
     results = []
     for row in inputfile: # each row is a list
         results.append(row)
-
+    
     kml = simplekml.Kml()
     van = kml.newlinestring(name="Van path")
     van.altitudemode = simplekml.AltitudeMode.relativetoground
@@ -53,6 +63,17 @@ def visualize(inputfile):
     xymDict = {}
     xypfol = kml.newfolder(name='XYP peaks')
     xypDict = {}
+    if windList is not None:
+        windFol = kml.newfolder(name='Wind directions')
+        for row in windList:
+            split = row[3].split()
+            wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
+            wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
+            wind_point.style.labelstyle.color = simplekml.Color.white
+            wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
+            wind_point.style.iconstyle.scale = 0.5
+            wind_point.iconstyle.heading = float(split[2])
+            
 
     # dictionary keys
     x = 0

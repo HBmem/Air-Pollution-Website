@@ -19,8 +19,10 @@
     <form method="post" enctype="multipart/form-data" >
         {% csrf_token %}
         <input type="file" id="fileID" name="fileName">
+        <input type="file" id="windID" name="windName">
         <button type="submit">Submit file</button>
     </form>
+    
     {% endblock %}
 
     <script src="../../static/website/function.js"></script>
