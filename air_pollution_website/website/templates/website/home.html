@@ -19,11 +19,31 @@
     
     <form method="post" enctype="multipart/form-data" >
         {% csrf_token %}
-        <input type="file" id="fileID" name="fileName">
-        <input type="file" id="windID" name="windName">
-        <button type="submit">Submit file</button>
+        <p>
+            <label for="fileName"><b>Concentration Data* (CSV File): </b></label>
+            <input type="file" id="fileID" name="fileName" required accept=".csv">
+        </p>
+        <p><b>Optional:</b></p>
+        <p>
+            <label for="windName"><b>Wind Data (Excel File): </b></label>
+            <input type="file" id="windID" name="windName" accept=".xlsx">
+        </p>
+        <p>
+            <label for="lag"><b>Lag: </b></label>
+            <input type="number" id="lag" name="lag" placeholder = "By default: 30">
+        </p>
+        <p>
+            <label for="threshold"><b>Threshold: </b></label>
+            <input type="number" id="threshold" name="threshold" placeholder = "By default: 2">
+        </p>
+        <p>
+            <label for="influence"><b>Influence: </b></label>
+            <input type="number" id="influence" name="influence" placeholder = "By default: 0">
+        </p>
+        <p>
+            <button type="submit">Submit file</button>
+        </p>
     </form>
-    
     {% endblock %}
 
     <script src="../../static/website/function.js"></script>
