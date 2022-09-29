@@ -41,14 +41,30 @@ def home(request):
             vo.append(float(row[6]))
             xym.append(float(row[7]))
             xyp.append(float(row[8]))
+        
+        # by default, lag = 30, threshold = 2, and influence = 0
+        if request.POST.get('lag'):
+            lag = int(request.POST.get('lag'))
+        else:
+            lag = 30
 
-        outputBen = transform(ben, 'BEN', lag=30, threshold=2, influence=0)
-        outputCh4 = transform(ch, 'CH4', lag=30, threshold=2, influence=0)
-        outputH2s = transform(h2, 'H2S', lag=30, threshold=2, influence=0)
-        outputTol = transform(to, 'TOL', lag=30, threshold=2, influence=0)
-        outputVoc = transform(vo, 'VOC', lag=30, threshold=2, influence=0)
-        outputXym = transform(xym, 'XYM', lag=30, threshold=2, influence=0)
-        outputXyp = transform(xyp, 'XYP', lag=30, threshold=2, influence=0)
+        if request.POST.get('threshold'):
+            threshold = int(request.POST.get('threshold'))
+        else:
+            threshold = 2
+
+        if request.POST.get('influence'):
+            influence = int(request.POST.get('influence'))
+        else:
+            influence = 0
+
+        outputBen = transform(ben, 'BEN', lag, threshold, influence)
+        outputCh4 = transform(ch, 'CH4', lag, threshold, influence)
+        outputH2s = transform(h2, 'H2S', lag, threshold, influence)
+        outputTol = transform(to, 'TOL', lag, threshold, influence)
+        outputVoc = transform(vo, 'VOC', lag, threshold, influence)
+        outputXym = transform(xym, 'XYM', lag, threshold, influence)
+        outputXyp = transform(xyp, 'XYP', lag, threshold, influence)
         final = np.column_stack((xcoord, ycoord, outputBen, outputCh4, outputH2s, outputTol, outputVoc, outputXym, outputXyp))
 
         kml = visualize(final, windList)
@@ -452,7 +468,7 @@ def about(request):
 
 # function to find peak and transform the data
 # by default, lag is 30, threshold is 2, and influence is 0
-def transform(data, chemical, lag = 30, threshold = 2, influence = 0):
+def transform(data, chemical, lag, threshold, influence):
     # find the peak
     signals = np.zeros(len(data))
     filteredData = np.array(data)
