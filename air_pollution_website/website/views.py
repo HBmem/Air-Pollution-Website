@@ -1,9 +1,4 @@
-import csv
-import re
-import simplekml
-import io
-import openpyxl
-import numpy as np
+import csv, re, simplekml, io, openpyxl, numpy as np
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -18,7 +13,6 @@ def home(request):
         decoded_file = thefile.read().decode('utf-8').splitlines()
         windList = None
         if thewind is not None:
-            #decoded_wind = thewind.read().decode('utf-8').splitlines()
             inputwind = openpyxl.load_workbook(thewind)
             ws = inputwind.active
             windList = []
@@ -66,7 +60,6 @@ def home(request):
 
 def show(request):
     return render(request, "website/show.html")
-
 
 def visualize(inputfile, windList):
     results = []
@@ -188,7 +181,7 @@ def visualize(inputfile, windList):
                 ch4High.coords.addcoordinates([(ch4Values[ch4Key][0], ch4Values[ch4Key][1], 0)])
 
             elif float(ch4id) < 10:
-                ch4Low = ch4fol.newlinestring(name="ch4 peak: " + ch4id)
+                ch4Low = ch4fol.newlinestring(name="CH4 peak: " + ch4id)
                 ch4Low.altitudemode = simplekml.AltitudeMode.relativetoground
                 ch4Low.style.linestyle.color = 'FF0C6F0C'
                 ch4Low.style.linestyle.width = 5
@@ -199,7 +192,7 @@ def visualize(inputfile, windList):
                 ch4Low.coords.addcoordinates([(ch4Values[ch4Key][0], ch4Values[ch4Key][1], 0)])
 
             else:
-                ch4 = ch4fol.newlinestring(name="ch4 peak: " + ch4id)
+                ch4 = ch4fol.newlinestring(name="CH4 peak: " + ch4id)
                 ch4.altitudemode = simplekml.AltitudeMode.relativetoground
                 ch4.style.linestyle.color = 'FF14B714'
                 ch4.style.linestyle.width = 5
@@ -329,7 +322,7 @@ def visualize(inputfile, windList):
                 vocHigh.coords.addcoordinates([(vocValues[vocKey][0], vocValues[vocKey][1], 0)])
 
             elif float(vocid) < 10:
-                vocLow = vocfol.newlinestring(name="voc peak: " + vocid)
+                vocLow = vocfol.newlinestring(name="VOC peak: " + vocid)
                 vocLow.altitudemode = simplekml.AltitudeMode.relativetoground
                 vocLow.style.linestyle.color = simplekml.Color.lightgray
                 vocLow.style.linestyle.width = 5
@@ -340,7 +333,7 @@ def visualize(inputfile, windList):
                 vocLow.coords.addcoordinates([(vocValues[vocKey][0], vocValues[vocKey][1], 0)])
 
             else:
-                voc = vocfol.newlinestring(name="voc peak: " + vocid)
+                voc = vocfol.newlinestring(name="VOC peak: " + vocid)
                 voc.altitudemode = simplekml.AltitudeMode.relativetoground
                 voc.style.linestyle.color = simplekml.Color.gray
                 voc.style.linestyle.width = 5
@@ -377,7 +370,7 @@ def visualize(inputfile, windList):
                 xymHigh.coords.addcoordinates([(xymValues[xymKey][0], xymValues[xymKey][1], 0)])
 
             elif float(xymid) < 10:
-                xymLow = xymfol.newlinestring(name="xym peak: " + xymid)
+                xymLow = xymfol.newlinestring(name="XYM peak: " + xymid)
                 xymLow.altitudemode = simplekml.AltitudeMode.relativetoground
                 xymLow.style.linestyle.color = simplekml.Color.rosybrown
                 xymLow.style.linestyle.width = 5
@@ -388,7 +381,7 @@ def visualize(inputfile, windList):
                 xymLow.coords.addcoordinates([(xymValues[xymKey][0], xymValues[xymKey][1], 0)])
 
             else:
-                xym = xymfol.newlinestring(name="xym peak: " + xymid)
+                xym = xymfol.newlinestring(name="XYM peak: " + xymid)
                 xym.altitudemode = simplekml.AltitudeMode.relativetoground
                 xym.style.linestyle.color = simplekml.Color.brown
                 xym.style.linestyle.width = 5
@@ -424,7 +417,7 @@ def visualize(inputfile, windList):
                 xypHigh.coords.addcoordinates([(xypValues[xypKey][0], xypValues[xypKey][1], 0)])
 
             elif float(xypid) < 10:
-                xypLow = xypfol.newlinestring(name="xyp peak: " + xypid)
+                xypLow = xypfol.newlinestring(name="XYP peak: " + xypid)
                 xypLow.altitudemode = simplekml.AltitudeMode.relativetoground
                 xypLow.style.linestyle.color = simplekml.Color.orangered
                 xypLow.style.linestyle.width = 5
@@ -435,7 +428,7 @@ def visualize(inputfile, windList):
                 xypLow.coords.addcoordinates([(xypValues[xypKey][0], xypValues[xypKey][1], 0)])
 
             else:
-                xyp = xypfol.newlinestring(name="xyp peak: " + xypid)
+                xyp = xypfol.newlinestring(name="XYP peak: " + xypid)
                 xyp.altitudemode = simplekml.AltitudeMode.relativetoground
                 xyp.style.linestyle.color = simplekml.Color.orange
                 xyp.style.linestyle.width = 5
