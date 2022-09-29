@@ -12,7 +12,7 @@ def home(request):
         return render(request, "website/home.html")
 
     elif request.method == 'POST':
-        thefile = request.FILES['fileName']
+        thefile = request.FILES.get('fileName')
         decoded_file = thefile.read().decode('utf-8').splitlines()
         
         inputfile = csv.reader(decoded_file)

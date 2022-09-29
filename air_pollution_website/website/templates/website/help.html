@@ -3,123 +3,124 @@
 {% block title %} <title>Help</title> {% endblock title %}
 
 {% block content %}
+    
+    <main class="container bg-op mw-75 mt-5">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="">
+                <h1>Help</h1>
 
-    <main class="container">
-        <div>
-            <h1>Help</h1>
+                <div id="accordian">
+                    <h2>Website</h2>
+                    <div class="card mb-2">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    What are requirements for files uploaded?
+                                </button>
+                            </h5>
+                        </div>
 
-            <div id="accordian">
-                <h2>Website</h2>
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                What are requirements for files uploaded?
-                            </button>
-                        </h5>
+                        <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body">
+                                <p>Files must be in CSV format including:
+                                    <ul>
+                                        <li>The first two columns are coordinates (x and y).</li>
+                                        <li>The next columns are chemicals and their concentrations.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#accordion">
-                        <div class="card-body">
-                            <p>Files must be in CSV format including:
-                                <ul>
-                                    <li>The first two columns are coordinates (x and y).</li>
-                                    <li>The next columns are chemicals and their concentrations.</li>
-                                </ul>
-                            </p>
+                    <div class="card mb-2">
+                        <div class="card-header" id="headingTwo">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                    How can I upload files?
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseTwo" class="collapse collapsed" aria-labelledby="headingTwo" data-parent="#accordion">
+                            <div class="card-body">
+                                <p>Steps:
+                                    <ol>
+                                        <li>Go to the Home page.</li>
+                                        <li>Click the box to choose a file, or drag a file into the box.</li>
+                                        <li>Click Submit button</li>
+                                    </ol>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="mt-5">Google Earth</h2>
+
+                    <div class="card mb-2">
+                        <div class="card-header" id="headingThree">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                    How can I edit the visualization?
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseThree" class="collapse collapsed" aria-labelledby="headingThree" data-parent="#accordion">
+                            <div class="card-body">
+                                <p>
+                                    <ol>
+                                        <li>Click Project icon on the left-hand side.</li>
+                                        <li>Click 'KML file' row.</li>
+                                        <li>As of now, you can see the chemicals' titles in your KML file. 
+                                            On the right-hand side of each title, there are  three options:
+                                            <ul>
+                                                <li>Edit feature - Change title, width, or color.</li>
+                                                <li>Hide feature / Show feature - Show or hide the visualization of that chemical.</li>
+                                                <li>Delete - Remove the visualization of that chemical .</li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-2">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                    How can I tilt or rotate the map?
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseFour" class="collapse collapsed" aria-labelledby="headingFour" data-parent="#accordion">
+                            <div class="card-body">
+                                <p>
+                                    Click the 3D button at the low-right corner.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-2">
+                        <div class="card-header" id="headingFive">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                                    More questions about Google Earth?
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseFive" class="collapse collapsed" aria-labelledby="headingFive" data-parent="#accordion">
+                            <div class="card-body">
+                                <p>
+                                    Check <a href="https://support.google.com/earth/?hl=en#topic=7364880" target="_blank" rel="noopener noreferrer">Google Earth Help Center</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                How can I upload files?
-                            </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseTwo" class="collapse collapsed" aria-labelledby="headingTwo" data-parent="#accordion">
-                        <div class="card-body">
-                            <p>Steps:
-                                <ol>
-                                    <li>Go to the Home page.</li>
-                                    <li>Click the box to choose a file, or drag a file into the box.</li>
-                                    <li>Click Submit button</li>
-                                </ol>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <h2 class="mt-5">Google Earth</h2>
-
-                <div class="card">
-                    <div class="card-header" id="headingThree">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                                How can I edit the visualization?
-                            </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseThree" class="collapse collapsed" aria-labelledby="headingThree" data-parent="#accordion">
-                        <div class="card-body">
-                            <p>
-                                <ol>
-                                    <li>Click Project icon on the left-hand side.</li>
-                                    <li>Click 'KML file' row.</li>
-                                    <li>As of now, you can see the chemicals' titles in your KML file. 
-                                        On the right-hand side of each title, there are  three options:
-                                        <ul>
-                                            <li>Edit feature - Change title, width, or color.</li>
-                                            <li>Hide feature / Show feature - Show or hide the visualization of that chemical.</li>
-                                            <li>Delete - Remove the visualization of that chemical .</li>
-                                        </ul>
-                                    </li>
-                                </ol>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header" id="headingFour">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                How can I tilt or rotate the map?
-                            </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseFour" class="collapse collapsed" aria-labelledby="headingFour" data-parent="#accordion">
-                        <div class="card-body">
-                            <p>
-                                Click the 3D button at the low-right corner.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header" id="headingFive">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                                More questions about Google Earth?
-                            </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseFive" class="collapse collapsed" aria-labelledby="headingFive" data-parent="#accordion">
-                        <div class="card-body">
-                            <p>
-                                Check <a href="https://support.google.com/earth/?hl=en#topic=7364880" target="_blank" rel="noopener noreferrer">Google Earth Help Center</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </main>

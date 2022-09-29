@@ -4,9 +4,65 @@
 
 {% block content %}
 
-    <div>
-        <h1>Create </h1>
-    </div>
+    <main class="container bg-op mt-5">
+
+        <div>
+            <h1>Enter you .csv file for kml conversion</h1>
+            <br>
+            <div class="row justify-content-center">
+                <img src="../../static/website/icons2.png" class="img-fluid" alt="Responsive image" style="width: 100px;">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row justify-content-center">
+            <form method="post" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <input type="file" id="fileID" name="fileName">
+                <button type="submit">Submit file</button>
+            </form>
+        </div>
+
+        <!-- WIP CODE: Will be used in another branch to complete drag and drop feature -->
+        {% comment %} <div>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="dropzone dz" id="DidDropzone">
+                {% csrf_token %}
+                <div class="dz-preview"></div>
+                <div class="fallback">
+                    <input type="file" type='file' multiple />
+                </div>
+                <button id="csv-btn" type="submit">Add File</button>
+                <button type="submit">Submit data and files!</button>
+                <button type="submit">Submit File</button>
+                <input type="text" name="name" />
+            </form>
+        </div>
+
+        <div>
+            <form method="post" enctype="multipart/form-data" class="dropzone">
+                {% csrf_token %}
+                <input type="file" id="fileID" name="fileName">
+                <button type="submit">Submit file</button>
+            </form>
+        </div>
+
+        <form action="/show" action="POST" id="upload-form" enctype="multipart/form-data" class="dropzone">
+            <!-- this is were the previews should be shown. -->
+            <div class="previews"></div>
+          
+            <button type="submit">Submit data and files!</button>
+        </form>
+
+        <h1>TEST</h1>
+        <form action="/upload" id="DidDropzone" class="dropzone dz" method="POST">
+            {% csrf_token %}
+            <div class="dz-message"> Upload your .csv file here</div>
+        </form>
+        <br>
+        <button id="csv-btn" type="submit">Add File</button>
+    </main>
+    
 
     <h1>Create your own visualization</h1>    
     <form action="" method="post" class="drop-zone" enctype="multipart/form-data" >
@@ -21,5 +77,6 @@
         {% csrf_token %}
         <input type="file" id="fileID" name="fileName">
         <button type="submit">Submit file</button>
-    </form>
+    </form> {% endcomment %}
+
 {% endblock %}
