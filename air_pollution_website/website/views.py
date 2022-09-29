@@ -1,4 +1,5 @@
 import csv, re, simplekml, io, openpyxl, numpy as np
+from website.models import Location
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -85,6 +86,10 @@ def visualize(inputfile, windList):
     xymDict = {}
     xypfol = kml.newfolder(name='XYP peaks')
     xypDict = {}
+    buidling = kml.newfolder(name='High pollution locations')
+    for location in Location.objects.all():
+        buildings = buidling.newpoint(name= location.name, coords = [(location.x_coord, location.y_coord)])
+
     if windList is not None:
         windFol = kml.newfolder(name='Wind directions')
         for row in windList:
@@ -95,8 +100,7 @@ def visualize(inputfile, windList):
             wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
             wind_point.style.iconstyle.scale = 0.5
             wind_point.iconstyle.heading = float(split[2])
-            
-
+    
     # dictionary keys
     x = 0
     y = 0
