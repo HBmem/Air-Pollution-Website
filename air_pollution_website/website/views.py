@@ -1,5 +1,8 @@
-import csv, re, simplekml, io, openpyxl, numpy as np
-from website.models import Location
+import csv, re, simplekml, io, openpyxl, numpy as np, os
+from website.models import Location, kmlFile
+from django.core.files import File
+from pathlib import Path
+from django.http import FileResponse
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -69,11 +72,31 @@ def home(request):
         final = np.column_stack((xcoord, ycoord, outputBen, outputCh4, outputH2s, outputTol, outputVoc, outputXym, outputXyp))
 
         kml = visualize(final, windList)
-        kml.save('practice3.kml')
+        kml.save('website/conversion.kml')
+
+        module_dir = os.path.dirname(__file__)
+        file_path = os.path.join(module_dir, 'conversion.kml')
+        
+        path = Path(file_path)
+        convertedFile = kmlFile(name=path.name)
         context = {}
+        
+        with path.open(mode='rb') as f:
+            print(path.name)
+            convertedFile.file = File(f, name=path.name)
+            convertedFile.save()
+            context = {"file": convertedFile}
+            request.session['fileID'] = convertedFile.id
+
         return render(request, "website/show.html", context)
     else:
         return render(request, "website/home.html")
+
+def download(request):
+    fileID = request.session.get('fileID')
+    file = kmlFile.objects.get(id=fileID)
+    return FileResponse(file.file, as_attachment=True)
+
 
 def show(request):
     return render(request, "website/show.html")

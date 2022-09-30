@@ -8,4 +8,9 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
-# Create your models here.
+class kmlFile(models.Model):
+    name = models.CharField(max_length=50)
+    file = models.FileField(upload_to='kml/')
+    
+    def __str__(self):
+        return self.name
