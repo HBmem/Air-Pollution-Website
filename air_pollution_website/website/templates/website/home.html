@@ -1,14 +1,92 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <link rel = "stylesheet" href = "{% static 'website/style.css' %}">
-    <title>Home</title>
-    <a href="{% url 'admin:index' %}">link to admin panel</a>
-</head>
-<body>
+{% extends './base.html' %}
+
+{% block title %} <title>Home</title> {% endblock title %}
+
+{% block content %}
+
+    <main class="container bg-op mt-5">
+
+        <div>
+            <h1>Enter you CSV file for KML conversion</h1>
+            <br>
+            <div class="row justify-content-center">
+                <img src="../../static/website/icons2.png" class="img-fluid" alt="Responsive image" style="width: 100px;">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row justify-content-center">
+            <form method="post" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <p>
+                    <label for="fileName"><b>Concentration Data* (CSV File): </b></label>
+                    <input type="file" id="fileID" name="fileName" required accept=".csv">
+                </p>
+                <p><b>Optional:</b></p>
+                <p>
+                    <label for="windName"><b>Wind Data (Excel File): </b></label>
+                    <input type="file" id="windID" name="windName" accept=".xlsx">
+                </p>
+                <p>
+                    <label for="lag"><b>Lag: </b></label>
+                    <input type="number" id="lag" name="lag" placeholder = "By default: 30">
+                </p>
+                <p>
+                    <label for="threshold"><b>Threshold: </b></label>
+                    <input type="number" id="threshold" name="threshold" placeholder = "By default: 2">
+                </p>
+                <p>
+                    <label for="influence"><b>Influence: </b></label>
+                    <input type="number" id="influence" name="influence" placeholder = "By default: 0">
+                </p>
+                <p>
+                    <button type="submit" class="btn btn-primary">Submit file</button>
+                </p>
+            </form>
+        </div>
+
+        <!-- WIP CODE: Will be used in another branch to complete drag and drop feature -->
+        {% comment %} <div>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="dropzone dz" id="DidDropzone">
+                {% csrf_token %}
+                <div class="dz-preview"></div>
+                <div class="fallback">
+                    <input type="file" type='file' multiple />
+                </div>
+                <button id="csv-btn" type="submit">Add File</button>
+                <button type="submit">Submit data and files!</button>
+                <button type="submit">Submit File</button>
+                <input type="text" name="name" />
+            </form>
+        </div>
+
+        <div>
+            <form method="post" enctype="multipart/form-data" class="dropzone">
+                {% csrf_token %}
+                <input type="file" id="fileID" name="fileName">
+                <button type="submit">Submit file</button>
+            </form>
+        </div>
+
+        <form action="/show" action="POST" id="upload-form" enctype="multipart/form-data" class="dropzone">
+            <!-- this is were the previews should be shown. -->
+            <div class="previews"></div>
+          
+            <button type="submit">Submit data and files!</button>
+        </form>
+
+        <h1>TEST</h1>
+        <form action="/upload" id="DidDropzone" class="dropzone dz" method="POST">
+            {% csrf_token %}
+            <div class="dz-message"> Upload your .csv file here</div>
+        </form>
+        <br>
+        <button id="csv-btn" type="submit">Add File</button>
+    </main>
+    
+
     <h1>Create your own visualization</h1>    
-    {% block content %}
     <form action="" method="post" class="drop-zone" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="drop-zone__prompt">
@@ -16,7 +94,7 @@
             <input type="file" id="dropID" name="dropName" class="drop-zone__input" accept=".csv" >
         </div>
     </form>
-    
+
     <form method="post" enctype="multipart/form-data" >
         {% csrf_token %}
         <p>
@@ -43,9 +121,5 @@
         <p>
             <button type="submit">Submit file</button>
         </p>
-    </form>
-    {% endblock %}
-
-    <script src="../../static/website/function.js"></script>
-</body>
-</html>
+    </form> {% endcomment %}
+{% endblock %}

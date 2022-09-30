@@ -1,25 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <link rel = "stylesheet" href = "{% static 'website/style.css' %}">
-    <title>About</title>
-</head>
-<body>
-    <h1>About us</h1>    
-    <p style="font-size: 18px;">
-        Visualize Air Pollution is a project developed by the University of Memphis.<br>
-        Our mission is to visualize the air pollution levels and potential sources on Google Earth.<br>
-        This project will promote the public's awareness of air pollution, help them to identify potential pollution sources, and support the environment justice (EJ) movement.
-    </p>
-    <p style="font-size: 18px;">People:
-        <ul style="font-size: 18px;">
-            <li>Dr. Chunrong Jia: Project Sponsor</li>
-            <li>Dr. Xichen Mou: Project Sponsor</li>
-            <li>Kamren Grady: Developer</li>
-            <li>Headley Brissett: Developer</li>
-            <li>Vu Le: Developer</li>
-        </ul>
-    </p>
-</body>
-</html>
+{% extends './base.html' %}
+
+{% block title %} <title>About</title> {% endblock title %}
+
+{% block content %}
+
+    <main class="container mt-5">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="bg-op">
+                <div>
+                    <h1>About</h1>
+                </div>
+                <div>
+                    <p>
+                        Visualize Air Pollution is a project cooperated between the University of Memphis and the U.S. Environmental Protection Agency (U.S. EPA).
+                        Our mission is to visualize the concentrations of chemical pollutants on Google Earth.
+                        By doing this, we want people to have more insights and awareness about air pollution around us.
+                    </p>
+        
+                    <p>
+                        Team:
+                        <ul>
+                            <li>Dr. Chunrong Jia: Project Sponsor</li>
+                            <li>Dr. Xichen Mou: Project Sponsor</li>
+                            <li>Kamren Grady: Developer</li>
+                            <li>Headley Brissett: Developer</li>
+                            <li>Vu Le: Developer</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
