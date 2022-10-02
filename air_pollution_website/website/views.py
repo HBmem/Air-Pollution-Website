@@ -1,4 +1,5 @@
 import csv, re, simplekml, io, openpyxl, numpy as np, os
+import shutil
 from website.models import Location, kmlFile
 from django.core.files import File
 from pathlib import Path
@@ -71,18 +72,33 @@ def home(request):
         outputXyp = transform(xyp, 'XYP', lag, threshold, influence)
         final = np.column_stack((xcoord, ycoord, outputBen, outputCh4, outputH2s, outputTol, outputVoc, outputXym, outputXyp))
 
+        try:
+            print("back: ", os.path.dirname(os.getcwd()))
+            prevdir = os.path.dirname(os.getcwd())
+            kmlPath = os.path.join(prevdir, 'air_pollution_website/kml')
+            print("kmlpath", kmlPath)
+            for filename in os.listdir(kmlPath):
+                print("loop")
+                filepath = os.path.join(kmlPath, filename)
+                print(filepath)
+                try:
+                    shutil.rmtree(filepath)
+                except OSError:
+                    os.remove(filepath)
+        except:
+            print("Kml folder does not exist")
+
         kml = visualize(final, windList)
         kml.save('website/conversion.kml')
 
         module_dir = os.path.dirname(__file__)
         file_path = os.path.join(module_dir, 'conversion.kml')
-        
+
         path = Path(file_path)
         convertedFile = kmlFile(name=path.name)
         context = {}
         
         with path.open(mode='rb') as f:
-            print(path.name)
             convertedFile.file = File(f, name=path.name)
             convertedFile.save()
             os.remove(path)
