@@ -85,6 +85,7 @@ def home(request):
             print(path.name)
             convertedFile.file = File(f, name=path.name)
             convertedFile.save()
+            os.remove(path)
             context = {"file": convertedFile}
             request.session['fileID'] = convertedFile.id
 
@@ -97,6 +98,8 @@ def download(request):
     file = kmlFile.objects.get(id=fileID)
     return FileResponse(file.file, as_attachment=True)
 
+def earth(request):
+    return redirect("https://earth.google.com/web/")
 
 def show(request):
     return render(request, "website/show.html")
