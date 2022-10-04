@@ -104,6 +104,7 @@ def home(request):
         with path.open(mode='rb') as f:
             convertedFile.file = File(f, name=path.name)
             convertedFile.save()
+            f.close()
             os.remove(path)
             context = {"file": convertedFile}
             request.session['fileID'] = convertedFile.id
