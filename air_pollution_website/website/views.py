@@ -1,21 +1,17 @@
-import csv, re, simplekml, io, openpyxl, numpy as np, os
-import shutil
+import csv, re, simplekml, io, openpyxl, numpy as np, os, shutil
 from website.models import Location, kmlFile
 from django.core.files import File
 from pathlib import Path
 from django.http import FileResponse
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-# Create your views here.
+# function on home page
 def home(request):
-    if request.method == 'GET':
-        return render(request, "website/home.html")
-    elif request.method == 'POST':
-        thefile = request.FILES.get('fileName', None)
-        thewind = request.FILES.get('windName', None)
-        decoded_file = thefile.read().decode('utf-8').splitlines()
+    # start the visualization if the user uploaded files
+    if request.method == 'POST':
+        # handle the wind file
+        thewind = request.FILES.get('windName', None) 
         windList = None
         if thewind is not None:
             inputwind = openpyxl.load_workbook(thewind)
@@ -24,24 +20,29 @@ def home(request):
             for row in ws.iter_rows(values_only=True): # each row is a list
                 windList.append(row)
             windList.pop(0)
+
+        # handle the concentration file
+        thefile = request.FILES.get('fileName', None) 
+        decoded_file = thefile.read().decode('utf-8').splitlines()
         inputfile = csv.reader(decoded_file)
-        next(inputfile)  # Go past the header
+        next(inputfile)  # Go past the header rows
+
+         # make each row as a list
         xcoord = []
         ycoord = []
         ben = []
-        ch = []
-        h2 = []
+        ch4 = []
+        h2s = [] 
         to = []
         vo = []
         xym = []
         xyp = []
-
-        for row in inputfile: # each row is a list
+        for row in inputfile: 
             xcoord.append(row[0])
             ycoord.append(row[1])
             ben.append(float(row[2]))
-            ch.append(float(row[3]))
-            h2.append(float(row[4]))
+            ch4.append(float(row[3]))
+            h2s.append(float(row[4]))
             to.append(float(row[5]))
             vo.append(float(row[6]))
             xym.append(float(row[7]))
@@ -63,15 +64,19 @@ def home(request):
         else:
             influence = 0
 
+        # transform the data using the peak algorithm
         outputBen = transform(ben, 'BEN', lag, threshold, influence)
-        outputCh4 = transform(ch, 'CH4', lag, threshold, influence)
-        outputH2s = transform(h2, 'H2S', lag, threshold, influence)
+        outputCh4 = transform(ch4, 'CH4', lag, threshold, influence)
+        outputH2s = transform(h2s, 'H2S', lag, threshold, influence)
         outputTol = transform(to, 'TOL', lag, threshold, influence)
         outputVoc = transform(vo, 'VOC', lag, threshold, influence)
         outputXym = transform(xym, 'XYM', lag, threshold, influence)
         outputXyp = transform(xyp, 'XYP', lag, threshold, influence)
+
+        # combine all columns to make the final dataset
         final = np.column_stack((xcoord, ycoord, outputBen, outputCh4, outputH2s, outputTol, outputVoc, outputXym, outputXyp))
 
+        # find the file name and file path
         try:
             print("back: ", os.path.dirname(os.getcwd()))
             prevdir = os.path.dirname(os.getcwd())
@@ -88,16 +93,14 @@ def home(request):
         except:
             print("Kml folder does not exist")
 
+        # visualize all data and save the KML file
         kml = visualize(final, windList)
         kml.save('website/conversion.kml')
-
         module_dir = os.path.dirname(__file__)
         file_path = os.path.join(module_dir, 'conversion.kml')
-
         path = Path(file_path)
         convertedFile = kmlFile(name=path.name)
         context = {}
-        
         with path.open(mode='rb') as f:
             convertedFile.file = File(f, name=path.name)
             convertedFile.save()
@@ -105,25 +108,37 @@ def home(request):
             context = {"file": convertedFile}
             request.session['fileID'] = convertedFile.id
 
-        return render(request, "website/show.html", context)
+        return render(request, "website/show.html", context) # move to the show page
     else:
         return render(request, "website/home.html")
 
+# function on show page
+def show(request):
+    return render(request, "website/show.html")
+
+# function on help page
+def help(request):
+    return render(request, "website/help.html")
+
+# function on about page
+def about(request):
+    return render(request, "website/about.html")
+
+# download function
 def download(request):
     fileID = request.session.get('fileID')
     file = kmlFile.objects.get(id=fileID)
     return FileResponse(file.file, as_attachment=True)
 
+# go to the Google Earth function
 def earth(request):
     return redirect("https://earth.google.com/web/")
 
-def show(request):
-    return render(request, "website/show.html")
-
+# visualize function
 def visualize(inputfile, windList):
     results = []
     for row in inputfile: # each row is a list
-        results.append(row)
+       results.append(row)
     
     kml = simplekml.Kml()
     van = kml.newlinestring(name="Van path")
@@ -160,7 +175,7 @@ def visualize(inputfile, windList):
             wind_point.iconstyle.heading = float(split[2])
     
     # dictionary keys
-    x = 0
+    x = 0 
     y = 0
     z = 0
     a = 0
@@ -505,12 +520,6 @@ def visualize(inputfile, windList):
         # end of XYP
 
     return(kml)
-
-def help(request):
-    return render(request, "website/help.html")
-
-def about(request):
-    return render(request, "website/about.html")
 
 # function to find peak and transform the data
 # by default, lag is 30, threshold is 2, and influence is 0
