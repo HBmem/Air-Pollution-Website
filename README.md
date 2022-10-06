@@ -12,3 +12,11 @@ upload files from our practice folder, then download them, and upload them to go
 
 alternatively you can use the website from here http://airpollutionvisualizer.pythonanywhere.com/
 this way you dont need to bother with all these steps, still need the files from the practice folder though
+
+
+
+
+Changes for python anywhere
+Views.py  line 83 changed to kmlPath = os.path.join(prevdir, 'air_pollution_website/kml')
+
+Settings.py SECRET_KEY changed to SECRET_KEY = os.getenv('SECRET_KEY') and add to imports 'from pathlib import Path'
