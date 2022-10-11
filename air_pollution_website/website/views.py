@@ -1,10 +1,14 @@
 import csv, re, simplekml, io, openpyxl, numpy as np, os, shutil
+from wsgiref.validate import validator
 from website.models import Location, kmlFile
 from django.core.files import File
 from pathlib import Path
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
+#from upload_validator import FileTypeValidator
+
+
 
 # function on home page
 def home(request):
@@ -23,6 +27,7 @@ def home(request):
 
         # handle the concentration file
         thefile = request.FILES.get('fileName', None) 
+        print(type(thefile))
         decoded_file = thefile.read().decode('utf-8').splitlines()
         inputfile = csv.reader(decoded_file)
         next(inputfile)  # Go past the header rows
@@ -104,6 +109,7 @@ def home(request):
         with path.open(mode='rb') as f:
             convertedFile.file = File(f, name=path.name)
             convertedFile.save()
+            f.close()
             os.remove(path)
             context = {"file": convertedFile}
             request.session['fileID'] = convertedFile.id
