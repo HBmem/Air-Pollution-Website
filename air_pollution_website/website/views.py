@@ -1,4 +1,5 @@
 import csv, re, simplekml, io, openpyxl, numpy as np, os, shutil
+import string
 from wsgiref.validate import validator
 from website.models import Location, kmlFile
 from django.core.files import File
@@ -18,6 +19,14 @@ def home(request):
         thewind = request.FILES.get('windName', None) 
         windList = None
         if thewind is not None:
+            fullstring = str(thewind)
+            substring = ".xlsx"
+            if fullstring != None and substring in fullstring:
+                print("Found!")
+            else:
+                messages.info(request, 'Please make sure your wind data is in the xlsx format.')
+                return render(request, "website/home.html")
+
             inputwind = openpyxl.load_workbook(thewind)
             ws = inputwind.active
             windList = []
@@ -27,7 +36,15 @@ def home(request):
 
         # handle the concentration file
         thefile = request.FILES.get('fileName', None) 
-        print(type(thefile))
+        fullstring = str(thefile)
+        substring = ".csv"
+        if fullstring != None and substring in fullstring:
+            print("Found!")
+        else:
+            messages.info(request, 'Please make sure your concentration data is in the CSV format')
+            return render(request, "website/home.html")
+
+        print(thefile)
         decoded_file = thefile.read().decode('utf-8').splitlines()
         inputfile = csv.reader(decoded_file)
         next(inputfile)  # Go past the header rows
@@ -88,7 +105,7 @@ def home(request):
             kmlPath = os.path.join(prevdir, 'air_pollution_website/kml')
             print("kmlpath", kmlPath)
             for filename in os.listdir(kmlPath):
-                print("loop")
+                
                 filepath = os.path.join(kmlPath, filename)
                 print(filepath)
                 try:
