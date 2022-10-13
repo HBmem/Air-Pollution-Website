@@ -1,15 +1,10 @@
 import csv, re, simplekml, io, openpyxl, numpy as np, os, shutil
-import string
-from wsgiref.validate import validator
 from website.models import Location, kmlFile
 from django.core.files import File
 from pathlib import Path
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-#from upload_validator import FileTypeValidator
-
-
 
 # function on home page
 def home(request):
@@ -19,57 +14,44 @@ def home(request):
         thewind = request.FILES.get('windName', None) 
         windList = None
         if thewind is not None:
-            fullstring = str(thewind)
-            substring = ".xlsx"
-            if fullstring != None and substring in fullstring:
-                print("Found!")
-            else:
-                messages.info(request, 'Please make sure your wind data is in the xlsx format.')
-                return render(request, "website/home.html")
-
             inputwind = openpyxl.load_workbook(thewind)
             ws = inputwind.active
             windList = []
-            for row in ws.iter_rows(values_only=True): # each row is a list
+            for row in ws.iter_rows(values_only = True): # each row is a list
                 windList.append(row)
             windList.pop(0)
 
         # handle the concentration file
-        thefile = request.FILES.get('fileName', None) 
-        fullstring = str(thefile)
-        substring = ".csv"
-        if fullstring != None and substring in fullstring:
-            print("Found!")
-        else:
-            messages.info(request, 'Please make sure your concentration data is in the CSV format')
+        try:
+            thefile = request.FILES.get('fileName', None) 
+            decoded_file = thefile.read().decode('utf-8').splitlines()
+            inputfile = csv.reader(decoded_file)
+            next(inputfile)  # Go past the header rows
+
+            # make each row as a list
+            xcoord = []
+            ycoord = []
+            ben = []
+            ch4 = []
+            h2s = [] 
+            to = []
+            vo = []
+            xym = []
+            xyp = []
+            for row in inputfile: 
+                xcoord.append(row[0])
+                ycoord.append(row[1])
+                ben.append(float(row[2]))
+                ch4.append(float(row[3]))
+                h2s.append(float(row[4]))
+                to.append(float(row[5]))
+                vo.append(float(row[6]))
+                xym.append(float(row[7]))
+                xyp.append(float(row[8]))
+        except IndexError:
+            messages.info(request, 'Sorry! Your concentration file does not contain valid data. Please check the example in the Help page.')
             return render(request, "website/home.html")
 
-        print(thefile)
-        decoded_file = thefile.read().decode('utf-8').splitlines()
-        inputfile = csv.reader(decoded_file)
-        next(inputfile)  # Go past the header rows
-
-         # make each row as a list
-        xcoord = []
-        ycoord = []
-        ben = []
-        ch4 = []
-        h2s = [] 
-        to = []
-        vo = []
-        xym = []
-        xyp = []
-        for row in inputfile: 
-            xcoord.append(row[0])
-            ycoord.append(row[1])
-            ben.append(float(row[2]))
-            ch4.append(float(row[3]))
-            h2s.append(float(row[4]))
-            to.append(float(row[5]))
-            vo.append(float(row[6]))
-            xym.append(float(row[7]))
-            xyp.append(float(row[8]))
-        
         # by default, lag = 30, threshold = 2, and influence = 0
         if request.POST.get('lag'):
             lag = int(request.POST.get('lag'))
@@ -100,20 +82,16 @@ def home(request):
 
         # find the file name and file path
         try:
-            print("back: ", os.path.dirname(os.getcwd()))
             prevdir = os.path.dirname(os.getcwd())
             kmlPath = os.path.join(prevdir, 'air_pollution_website/kml')
-            print("kmlpath", kmlPath)
             for filename in os.listdir(kmlPath):
-                
                 filepath = os.path.join(kmlPath, filename)
-                print(filepath)
                 try:
                     shutil.rmtree(filepath)
                 except OSError:
                     os.remove(filepath)
         except:
-            print("Kml folder does not exist")
+            pass
 
         # visualize all data and save the KML file
         kml = visualize(final, windList)
@@ -159,6 +137,22 @@ def earth(request):
 
 # visualize function
 def visualize(inputfile, windList):
+    # visualize the wind data
+    if windList is not None:
+        try:
+            windFol = kml.newfolder(name='Wind directions')
+            for row in windList:
+                split = row[3].split()
+                wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
+                wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
+                wind_point.style.labelstyle.color = simplekml.Color.white
+                wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
+                wind_point.style.iconstyle.scale = 0.5
+                wind_point.iconstyle.heading = float(split[2])
+        except:
+            pass
+
+     # visualize the concentration data
     results = []
     for row in inputfile: # each row is a list
        results.append(row)
@@ -185,17 +179,6 @@ def visualize(inputfile, windList):
     buidling = kml.newfolder(name='High pollution locations')
     for location in Location.objects.all():
         buildings = buidling.newpoint(name= location.name, coords = [(location.x_coord, location.y_coord)])
-
-    if windList is not None:
-        windFol = kml.newfolder(name='Wind directions')
-        for row in windList:
-            split = row[3].split()
-            wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
-            wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
-            wind_point.style.labelstyle.color = simplekml.Color.white
-            wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
-            wind_point.style.iconstyle.scale = 0.5
-            wind_point.iconstyle.heading = float(split[2])
     
     # dictionary keys
     x = 0 
