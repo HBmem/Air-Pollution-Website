@@ -137,27 +137,24 @@ def earth(request):
 
 # visualize function
 def visualize(inputfile, windList):
+    kml = simplekml.Kml()
+    
     # visualize the wind data
     if windList is not None:
-        try:
-            windFol = kml.newfolder(name='Wind directions')
-            for row in windList:
-                split = row[3].split()
-                wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
-                wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
-                wind_point.style.labelstyle.color = simplekml.Color.white
-                wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
-                wind_point.style.iconstyle.scale = 0.5
-                wind_point.iconstyle.heading = float(split[2])
-        except:
-            pass
+        windFol = kml.newfolder(name='Wind directions')
+        for row in windList:
+            split = row[3].split()
+            wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
+            wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
+            wind_point.style.labelstyle.color = simplekml.Color.white
+            wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
+            wind_point.style.iconstyle.scale = 0.5
+            wind_point.iconstyle.heading = float(split[2])
 
      # visualize the concentration data
     results = []
     for row in inputfile: # each row is a list
        results.append(row)
-    
-    kml = simplekml.Kml()
     van = kml.newlinestring(name="Van path")
     van.altitudemode = simplekml.AltitudeMode.relativetoground
 
@@ -429,7 +426,6 @@ def visualize(inputfile, windList):
             vocDict = {}
             b = 0
         # end of VOC
-
 
         # start of XYM
         if row[7] != '0.0':
