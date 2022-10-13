@@ -141,15 +141,18 @@ def visualize(inputfile, windList):
     
     # visualize the wind data
     if windList is not None:
-        windFol = kml.newfolder(name='Wind directions')
-        for row in windList:
-            split = row[3].split()
-            wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
-            wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
-            wind_point.style.labelstyle.color = simplekml.Color.white
-            wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
-            wind_point.style.iconstyle.scale = 0.5
-            wind_point.iconstyle.heading = float(split[2])
+        try:
+            windFol = kml.newfolder(name='Wind directions')
+            for row in windList:
+                split = row[3].split()
+                wind_point = windFol.newpoint(name= split[0]+""+split[1], coords = [(row[0], row[1])])
+                wind_point.altitudemode = simplekml.AltitudeMode.relativetoground
+                wind_point.style.labelstyle.color = simplekml.Color.white
+                wind_point.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/arrow.png'
+                wind_point.style.iconstyle.scale = 0.5
+                wind_point.iconstyle.heading = float(split[2])
+        except:
+            pass
 
      # visualize the concentration data
     results = []
